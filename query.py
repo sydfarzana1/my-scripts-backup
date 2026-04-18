@@ -1,0 +1,3 @@
+query = """
+SELECT Server.sn_tag, Server.sku_tag, JSON_UNQUOTE(ServerStatus.states -> '$.sfcs.model') AS model, ServerStatus.started, ServerStatus.finished, CASE WHEN ServerStatus.ok = 0 THEN 'FAIL' WHEN ServerStatus.ok = 1 THEN 'PASS' END AS result, JSON_UNQUOTE( ServerStatus.states -> '$.jar_deliver."testErrorCode"') AS test_error_code, JSON_UNQUOTE(ServerStatus.states->'$.jar_deliver.associatedTestSetName') AS TestSet, JSON_UNQUOTE(ServerStatus.states->'$.jar_deliver.failureMessage') AS fail_message FROM Server JOIN ServerStatus ON Server.serverstatus_id = ServerStatus.id LEFT JOIN servererror ON Server.serverstatus_id = servererror.serverstatus_id WHERE (Server.sku_tag LIKE 'HYV-S-E5%%' OR Server.sku_tag LIKE 'HYV-S-X10%%') AND DATE(ServerStatus.finished) = %s
+"""
